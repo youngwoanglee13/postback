@@ -19,6 +19,7 @@ export class ReviewController {
         return this.userPostReviewService.getReview(id);
     }
     @Put()
+    @UseGuards(JwtAuthGuard)
     updateReview(id: number, review: ReviewDTO): Promise<ReviewDTO> {
         return this.userPostReviewService.updateReview(id, review);
     }

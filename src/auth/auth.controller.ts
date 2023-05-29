@@ -26,7 +26,7 @@ export class AuthController {
         const token = await this.authService.signIn(email, password);
         return res.status(200).header('authorization', token).send();
     }
-    @Get('/all')
+    @Get('/all')//borrar al final
     async getAllUsers(): Promise<UserDTO[]> {
         return await this.authService.getAllUsers();
     }

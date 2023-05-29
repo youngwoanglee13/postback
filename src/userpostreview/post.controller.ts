@@ -37,7 +37,7 @@ export class PostController {
     deletePost(id: number): Promise<any> {
       return this.userPostReviewService.deletePost(id);
     }
-    @Get('/info')
+    @Get('/info') //borrar al final
     getAllinfos(): Promise<UserInfoDTO[]> {
       return this.userPostReviewService.getAllUserInfo()
     }
