@@ -1,9 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ReviewDTO } from 'src/dto/review.dto';
+import { UserInfoDTO } from 'src/dto/userinfo.dto';
 import { PostEntity } from 'src/entities/post.entity';
 import { ReviewEntity } from 'src/entities/review.entity';
 import { UserInfoEntity } from 'src/entities/userinfo.entity';
 import { Repository } from 'typeorm';
+import { PostDTO } from 'src/dto/post.dto';
+
 
 @Injectable()
 export class UserPostReviewService {
@@ -16,46 +20,46 @@ export class UserPostReviewService {
         return 'Adios mundo cruel';
     }
     //POST
-    async createPost(post: PostEntity) : Promise<PostEntity> {
+    async createPost(post: PostDTO) : Promise<PostDTO> {
         return await this.postRepository.save(post);
     }
-    async getPosts(): Promise<PostEntity[]> {
+    async getPosts(): Promise<PostDTO[]> {
         return await this.postRepository.find();
     }
-    async getPost(id: number): Promise<PostEntity> {
+    async getPost(id: number): Promise<PostDTO> {
         return await this.postRepository.findOne({ where: { id } });
     }
-    async updatePost(id: number, post: PostEntity): Promise<PostEntity> {
+    async updatePost(id: number, post: PostDTO): Promise<PostDTO> {
         return await this.postRepository.update(id, post).then(() => this.getPost(id));
     }
     async deletePost(id: number): Promise<any> {
         return await this.postRepository.delete(id);
     }
     //REVIEW
-    async createReview(review: ReviewEntity, idPost: number, idUser: number) : Promise<ReviewEntity> {
+    async createReview(review: ReviewDTO, idPost: number, idUser: number) : Promise<ReviewDTO> {
         const post = await this.postRepository.findOne({where: {id: idPost}});
         const userInfo = await this.userInfoRepository.findOne({where: {user: {id: idUser}}});
         review.post = post;
         review.userInfo = userInfo;
         return await this.reviewRepository.save(review);
     }
-    async getReviews(): Promise<ReviewEntity[]> {
+    async getReviews(): Promise<ReviewDTO[]> {
         return await this.reviewRepository.find();
     }
-    async getReview(id: number): Promise<ReviewEntity> {
+    async getReview(id: number): Promise<ReviewDTO> {
         return await this.reviewRepository.findOne({ where: { id } });
     }
-    async updateReview(id: number, review: ReviewEntity): Promise<ReviewEntity> {
+    async updateReview(id: number, review: ReviewDTO): Promise<ReviewDTO> {
         return await this.reviewRepository.update(id, review).then(() => this.getReview(id));
     }
     async deleteReview(id: number): Promise<any> {
         return await this.reviewRepository.delete(id);
     }
     //USERINFO
-    async getAllUserInfo(): Promise<UserInfoEntity[]> {
-        return await this.userInfoRepository.find();
+    async getAllUserInfo(): Promise<UserInfoDTO[]> {
+        return await this.userInfoRepository.find(); 
     }
-    async getUserInfoByUserId(userId: number): Promise<UserInfoEntity> {
+    async getUserInfoByUserId(userId: number): Promise<UserInfoDTO> {
         const userInfo = await this.userInfoRepository.findOne({
             where: { user: { id: userId } },
           });

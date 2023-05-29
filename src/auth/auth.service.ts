@@ -5,11 +5,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
 import { jwtConfig } from 'src/jwt/jwt.config';
-
+import { UserDTO }from 'src/dto/user.dto';
 @Injectable()
 export class AuthService {
     constructor(@InjectRepository(UserEntity) private authRepository: Repository<UserEntity>) { }
-    async signUp(user: UserEntity): Promise<String> {
+    async signUp(user: UserDTO): Promise<String> {
         user.password = await this.setHashPassword(user.password);
         const userExist = await this.authRepository.findOne({where: {email: user.email}});
         if (userExist) {
@@ -21,7 +21,7 @@ export class AuthService {
     async signIn(email: string, password: string): Promise<String> {
         const user = await this.authRepository.findOne({where: {email}});
         if (!user) {
-            throw new UnauthorizedException('El correo no está registrado');
+            throw new NotFoundException('El correo no está registrado');
         }
         const isMatch = await this.comparePasswords(password, user.password);
         if (!isMatch) {
@@ -48,7 +48,7 @@ export class AuthService {
         const newtoken = await jwt.sign(payload, jwtConfig.secret,);
         return newtoken;   
     }
-    async getAllUsers(): Promise<UserEntity[]> {//eliminar este metodo cuando se termine el proyecto
+    async getAllUsers(): Promise<UserDTO[]> {//eliminar este metodo cuando se termine el proyecto
         return await this.authRepository.find();
     }
 }

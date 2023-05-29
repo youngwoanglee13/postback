@@ -1,9 +1,8 @@
 import { Controller, Delete, Get, Post, Put, UseGuards, Request, Body } from '@nestjs/common';
 import { UserPostReviewService } from './userpostreview.service';
-import { PostEntity } from 'src/entities/post.entity';
 import { JwtAuthGuard } from 'src/jwt/jwt-auth.guard';
-import { UserInfoEntity } from 'src/entities/userinfo.entity';
-
+import { UserInfoDTO } from 'src/dto/userinfo.dto';
+import { PostDTO } from 'src/dto/post.dto';
 @Controller('post')
 export class PostController {
   constructor(private userPostReviewService: UserPostReviewService) { } 
@@ -13,24 +12,24 @@ export class PostController {
     }
     @Post()
     @UseGuards(JwtAuthGuard)
-    async createPost(@Request() request, @Body() post: PostEntity): Promise<PostEntity> {
+    async createPost(@Request() request, @Body() post: PostDTO): Promise<PostDTO> {
       const userInfo = await this.userPostReviewService.getUserInfoByUserId(request.user.id);
-      const newPost = new PostEntity();
+      const newPost = new PostDTO();
       newPost.description = post.description;
       newPost.userinfo = userInfo;
       return this.userPostReviewService.createPost(newPost);
     }
     @Get('/all')
-    getPosts(): Promise<PostEntity[]> {
+    getPosts(): Promise<PostDTO[]> {
       return this.userPostReviewService.getPosts();
     }
     @Get()
-    getPost(id: number): Promise<PostEntity> {
+    getPost(id: number): Promise<PostDTO> {
       return this.userPostReviewService.getPost(id);
     }
     @Put()
     @UseGuards(JwtAuthGuard)
-    updatePost(id: number, post: PostEntity): Promise<PostEntity> {
+    updatePost(id: number, post: PostDTO): Promise<PostDTO> {
       return this.userPostReviewService.updatePost(id, post);
     }
     @Delete()
@@ -39,7 +38,7 @@ export class PostController {
       return this.userPostReviewService.deletePost(id);
     }
     @Get('/info')
-    getAllinfos(): Promise<UserInfoEntity[]> {
+    getAllinfos(): Promise<UserInfoDTO[]> {
       return this.userPostReviewService.getAllUserInfo()
     }
 }

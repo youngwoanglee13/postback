@@ -1,25 +1,25 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Request, UseGuards } from '@nestjs/common';
 import { UserPostReviewService } from './userpostreview.service';
-import { ReviewEntity } from 'src/entities/review.entity';
 import { JwtAuthGuard } from 'src/jwt/jwt-auth.guard';
+import { ReviewDTO } from 'src/dto/review.dto';
 @Controller('review')
 export class ReviewController {
     constructor(private userPostReviewService: UserPostReviewService) { }
     @Post()
     @UseGuards(JwtAuthGuard)
-    createReview( @Body() payload: { review: ReviewEntity, idPost: number }, @Request() request) : Promise<ReviewEntity> {
+    createReview( @Body() payload: { review: ReviewDTO, idPost: number }, @Request() request) : Promise<ReviewDTO> {
         return this.userPostReviewService.createReview(payload.review, payload.idPost, request.user.id);
     }
     @Get()
-    getReviews(): Promise<ReviewEntity[]> {
+    getReviews(): Promise<ReviewDTO[]> {
         return this.userPostReviewService.getReviews();
     }
     @Get()
-    getReview(id: number): Promise<ReviewEntity> {
+    getReview(id: number): Promise<ReviewDTO> {
         return this.userPostReviewService.getReview(id);
     }
     @Put()
-    updateReview(id: number, review: ReviewEntity): Promise<ReviewEntity> {
+    updateReview(id: number, review: ReviewDTO): Promise<ReviewDTO> {
         return this.userPostReviewService.updateReview(id, review);
     }
 }
